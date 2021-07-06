@@ -9,6 +9,7 @@ class AStar:
         self.stash[self.start] = ([], self.get_distance(self.start, self.goal), 0) # path, total, current distance
         self.grid[self.start[0]][self.start[1]] = 0
     
+    # run one itteration of the alogrithm as opposed to one-shot
     def run_next(self):
         if len(self.stash) == 0:
             return (None, False, None)
@@ -30,7 +31,7 @@ class AStar:
         return (self.grid, False, None)
         
 
-    
+    # one shot algorithm
     def iterate(self):
         current = self.start
 
@@ -68,6 +69,7 @@ class AStar:
     def get_distance(self, a, b):
         return abs(a[0]-b[0]) + abs(a[1]-b[1])
     
+    # gets the that has the minimum predicted distance to the goal
     def get_next_on_stash(self):
         min = float("inf")
         min_node = None
@@ -127,21 +129,3 @@ class AStar:
                 neighbors.append([node[0], node[1]-1])
         neighbors = [(i[0], i[1]) for i in neighbors]
         return neighbors
-
-
-if __name__ == "__main__":
-    grid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-    grid  = [ [float("inf") for i in range(4)] for _ in range(4)]
-
-    a_star = AStar((4, 4), (1,0), (3,3))
-
-    grid, result, path = a_star.run_next()
-    while not result:
-        a_star.print_grid()
-        print(a_star.stash)
-        
-        input()
-        print()
-        grid, result, path = a_star.run_next()
-
-    print("RESULT:", path)

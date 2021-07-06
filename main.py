@@ -11,12 +11,10 @@ YELLOW = (200, 200, 0)
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 blockSize = 10 #Set the size of the grid block
+wallThreshold = 0.25
 
 done = False
 ploted = False
-
-# start = (3,1)
-# end = (10,12)
 
 def main():
     global SCREEN, CLOCK, done
@@ -25,8 +23,10 @@ def main():
     CLOCK = pygame.time.Clock()
     SCREEN.fill(WHITE)
 
+    # Randomize the gird with 
     grid, start, end = randomize_grid((WINDOW_WIDTH//blockSize, WINDOW_HEIGHT//blockSize))
 
+    # Initalize selected algorithm
     a_star = AStar(grid, start, end)
     # a_star = Dijkstra(grid, start, end)
 
@@ -41,7 +41,7 @@ def main():
         pygame.display.update()
     input()
 
-
+# Updates the grid with checked and border cells
 def updateGrid(path_finder, start, end):
     global done, ploted
     if not done:
@@ -69,6 +69,7 @@ def updateGrid(path_finder, start, end):
                 pygame.draw.rect(SCREEN, GREEN, rect)
             done = True
 
+# Draws the grid
 def draw_grid(grid, start, end):
     for x, row in enumerate(grid):
         for y, item in enumerate(row):
@@ -83,6 +84,7 @@ def draw_grid(grid, start, end):
             else:
                 pygame.draw.rect(SCREEN, BLACK, rect)
 
+# Checks if the cell is in the current border or not
 def is_in_stash(stash, item):
     for i in stash:
         if i == item:
@@ -94,13 +96,14 @@ def randomize_points():
     end = (random.randint(0, WINDOW_WIDTH//blockSize), random.randint(0, WINDOW_HEIGHT//blockSize))
     return start, end
 
+# Generates a random grid with wallss
 def randomize_grid(grid_size):
     start = (random.randint(0, WINDOW_WIDTH//blockSize), random.randint(0, WINDOW_HEIGHT//blockSize))
     end = (random.randint(0, WINDOW_WIDTH//blockSize), random.randint(0, WINDOW_HEIGHT//blockSize))
     grid = [[float("inf") for _ in range(grid_size[1])] for _ in range(grid_size[0])]
     for i, row in enumerate(grid):
         for j, _ in enumerate(row):
-            if random.random() > 0.75:
+            if random.random() < wallThreshold:
                 grid[i][j] = None
     grid[start[0]][start[1]] = float("inf")
     grid[end[0]][end[1]] = float("inf")
